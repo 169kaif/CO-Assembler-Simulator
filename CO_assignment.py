@@ -1,14 +1,15 @@
+assembly_instructions = []	
+
 with open("CO_instructions.txt", "r") as f:
 	for line in f:
-		if (line=="\n"):
-			pass
-        if line == label
+		assembly_instructions.append(line)
 
-        if line == instruction
+d_registers = {'R0':'000', 'R1':'001', 'R2':'010', 'R3':'011', 'R4':'100', 'R5':'101', 'R6':'110', 'FLAGS':'111'}
 
-        if line == variable definition
+correct_instructions = [x]
 
+emptylines = 0
 
-l_instructions = []
-l_variables = []
-l_labels =[]			
+for instruction in assembly_instructions:
+	if instruction == '\n':
+		emptylines+=1

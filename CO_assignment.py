@@ -61,7 +61,7 @@ def f_A(a):
 def f_B(a):
 	reg1 = d_registers[a[1]]
 	print(reg1 + f'{int(a[2]):08b}')
-	
+
 def f_C(a):
 	reg1 = d_registers[a[1]]
 	reg2 = d_registers[a[2]]
@@ -69,11 +69,11 @@ def f_C(a):
 
 def f_D(a):
 	reg1 = d_registers[a[1]]
-	reg2 = d_registers[a[2]]
+	reg2 = d_var[a[2]]
 	print(reg1 + reg2)
 
 def f_E(a):
-	reg1 = d_registers[a[1]]
+	reg1 = d_var[a[1]]
 	print('000'+reg1)
 
 

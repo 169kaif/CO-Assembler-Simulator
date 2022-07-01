@@ -10,15 +10,19 @@ correct_instructions = []
 faulty_instructions = []
 
 emptylines = 0
+emptyline_index = []
 
-for instruction in assembly_instructions:
+for (index,instruction) in enumerate(assembly_instructions):
 	if instruction == '\n':
+		emptyline_index.append(index)
 		emptylines+=1
 
-varlines=0
+varlines = 0
+var_index = []
 
-for instruction in assembly_instructions:
+for (index,instruction) in enumerate(assembly_instructions):
 	if (instruction[0:3]=='var'):
+		var_index.append(index)
 		varlines += 1
 
 
@@ -28,3 +32,14 @@ d={"add":["A","10000"],"sub":["A","10001"],"mov":["B","10010"],"ld":["D","10100"
   "je":["E","01111"],"hlt":["F","01010"]}#mov is in "c" and "b"		
 
   #testcommit pavit
+
+  #variable assignment function to be inserted here
+
+for (index,line) in assembly_instructions:
+	a = line.split()
+	if index in emptyline_index:
+		continue
+  if index in var_index:
+  	continue
+  if a[0] in d.keys():
+  	print(d[a[0]][1], end='')	

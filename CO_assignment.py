@@ -30,18 +30,37 @@ d={"add":["A","10000"],"sub":["A","10001"],"mov":["B","10010"],"ld":["D","10100"
   "and":["A","11100"],"not":["C","11101"],"cmp":["C","11110"],"jmp":["E","11111"],"jlt":["E","01100"],"jgt":["E","01101"],
   "je":["E","01111"],"hlt":["F","01010"]}#mov is in "c" and "b"		
 
-def f_A(a):
-	reg1 = d_registers[a[1]]
-	reg2 = d_registers[a[2]]
-	reg3 = d_registers[a[3]]
 
-	print('00' + reg1 + reg2 + reg3)
 
   #testcommit pavit
 
   #variable assignment function to be inserted here
 
   #label check niggers
+def f_A(a):
+	reg1 = d_registers[a[1]]
+	reg2 = d_registers[a[2]]
+	reg3 = d_registers[a[3]]
+	print('00' + reg1 + reg2 + reg3)
+
+def f_B(a):
+	reg1 = d_registers[a[1]]
+	print(reg1 + f'{int(a[2]):08b}')
+	
+def f_C(a):
+	reg1 = d_registers[a[1]]
+	reg2 = d_registers[a[2]]
+	print('00000' + reg1 + reg2 )
+
+def f_D(a):
+	reg1 = d_registers[a[1]]
+	reg2 = d_registers[a[2]]
+	print(reg1 + reg2)
+
+def f_E(a):
+	reg1 = d_registers[a[1]]
+	print('000'+reg1)
+
 
 for (index,line) in assembly_instructions:
 	a = line.split()
@@ -53,4 +72,18 @@ for (index,line) in assembly_instructions:
 	if a[0] in d.keys():
 		if d[a[0]][0] == 'A':
 			print(d[a[0]][1], end='')
-			f_A(a)       
+			f_A(a)
+		if d[a[0]][0] == 'B':
+			print(d[a[0]][1], end='')
+			f_B(a)
+		if d[a[0]][0] == 'C':
+			print(d[a[0]][1], end='')
+			f_C(a)
+		if d[a[0]][0] == 'D':
+			print(d[a[0]][1], end='')
+			f_D(a)
+		if d[a[0]][0] == 'E':
+			print(d[a[0]][1], end='')
+			f_E(a)
+		if d[a[0]][0] == 'F':
+			print(d[a[0]][1]+"00000000000")

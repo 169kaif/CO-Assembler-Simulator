@@ -23,14 +23,29 @@ for (index,instruction) in enumerate(assembly_instructions):
 		var_index.append(index)
 		varlines += 1
 
+#variable bakchodi
+
+var_val = len(assembly_instructions) - varlines - emptylines
+
+d_var = {}
+
+for line in assembly_instructions:
+	ls = line.split()
+
+	if ls[0]=='var':
+		if ls[1] not in d_var.keys():
+			d_var[ls[1]] = format(var_val, '08b')
+			var_val+=1
+
+
 d_registers = {'R0':'000', 'R1':'001', 'R2':'010', 'R3':'011', 'R4':'100', 'R5':'101', 'R6':'110', 'FLAGS':'111'}
 
 d={"add":["A","10000"],"sub":["A","10001"],"mov":["B","10010"],"ld":["D","10100"],"st":["D","10101"],
   "mul":["A","10110"],"div":["C","10111"],"rs":["B","11000"],"ls":["B","11001"],"xor":["A","11010"],"or":["A","11011"],
   "and":["A","11100"],"not":["C","11101"],"cmp":["C","11110"],"jmp":["E","11111"],"jlt":["E","01100"],"jgt":["E","01101"],
-  "je":["E","01111"],"hlt":["F","01010"]}#mov is in "c" and "b"		
-
-
+  "je":["E","01111"],"hlt":["F","01010"]}
+  
+  #mov is in both "c" and "b"		
 
   #testcommit pavit
 

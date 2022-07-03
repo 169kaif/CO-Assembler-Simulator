@@ -107,7 +107,13 @@ for (index,line) in assembly_instructions:
 
 d_labels = {}
 
+label_vartemp=0
+label_emptytemp=0
 for index,line in enumerate(assembly_instructions):
 	ls = line.split()
-	if ((ls[0][-1] == ':') and ((ls[0][:len(ls[0])-1])not in d_labels)):
-		d_labels[(ls[0][:len(ls[0])-1])] = index
+	if (line == '\n'):
+		label_emptytemp+=1
+    if (line[0:3]=='var'):
+		label_vartemp+=1		
+    if ((ls[0][-1] == ':') and ((ls[0][:len(ls[0])-1])not in d_labels)):
+		d_labels[(ls[0][:len(ls[0])-1])] = format(index - label_emptytemp - label_vartemp, '02b')	

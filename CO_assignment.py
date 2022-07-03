@@ -67,7 +67,10 @@ def f_B(a):
 	print(reg1 + f'{int(a[2][1:]):08b}')
 
 def f_C(a):
-	print(d[a[0]][1], end='')
+	if a[0]=="mov":
+		print("10011")
+	else:
+		print(d[a[0]][1], end='')
 	reg1 = d_registers[a[1]]
 	reg2 = d_registers[a[2]]
 	print('00000' + reg1 + reg2 )
@@ -89,7 +92,11 @@ for (index,line) in enumerate(assembly_instructions):
 	a = line.split()
 	if index in var_index:
 		continue
-
+	if a[0]=="mov":
+		if a[-1][0]=="$":
+			f_B(a)
+		else:
+			f_C(a)
 	if a[0] in d.keys():
 		if d[a[0]][0] == 'A':
 			f_A(a)

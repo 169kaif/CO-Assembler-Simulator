@@ -110,3 +110,4 @@ for (index,line) in enumerate(assembly_instructions):
 			f_E(a)
 		if d[a[0]][0] == 'F':
 			f_F(a)
+    elif  a[0] not in d.keys():

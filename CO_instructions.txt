@@ -1,6 +1,6 @@
-nigger1
-
-nigger2
-nigger3
-nigger4
-var 567
+var X
+mov R1 $10
+mov R2 $100
+mov R3 R1 R2
+st R3 X
+hlt

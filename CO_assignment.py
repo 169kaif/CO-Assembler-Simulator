@@ -98,8 +98,8 @@ def f_D(a):
 	print(reg1 + reg2)
 
 def f_E(a): #label implementation  here <-----
-	if a[1] not in d_var:
-		print("Error: Invalid variable")
+	if a[1] not in d_labels:
+		print("Error: Invalid lable")
 	print(d[a[0]][1], end='')
 	reg1 = d_labels[a[1]]
 	print('000'+reg1)

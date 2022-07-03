@@ -68,7 +68,7 @@ def f_B(a):
 
 def f_C(a):
 	if a[0]=="mov":
-		print("10011")
+		print("10011", end='')
 	else:
 		print(d[a[0]][1], end='')
 	reg1 = d_registers[a[1]]

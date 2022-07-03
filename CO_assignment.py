@@ -64,7 +64,7 @@ def f_A(a):
 def f_B(a):
 	print(d[a[0]][1], end='')
 	reg1 = d_registers[a[1]]
-	print(reg1 + f'{int(a[2]):08b}')
+	print(reg1 + f'{int(a[2][1:]):08b}')
 
 def f_C(a):
 	print(d[a[0]][1], end='')
@@ -85,7 +85,7 @@ def f_E(a): #label implementation  here <-----
 def f_F(a):
 	print(d[a[0]][1]+"00000000000")
 
-for (index,line) in assembly_instructions:
+for (index,line) in enumerate(assembly_instructions):
 	a = line.split()
 	if index in var_index:
 		continue

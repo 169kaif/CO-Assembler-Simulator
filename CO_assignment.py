@@ -72,8 +72,8 @@ def f_D(a):
 	reg2 = d_var[a[2]]
 	print(reg1 + reg2)
 
-def f_E(a):
-	reg1 = d_var[a[1]]
+def f_E(a): #label implementation  here <-----
+	reg1 = d_labels[a[1]]
 	print('000'+reg1)
 
 
@@ -97,7 +97,7 @@ for (index,line) in assembly_instructions:
 		if d[a[0]][0] == 'D':
 			print(d[a[0]][1], end='')
 			f_D(a)
-		if d[a[0]][0] == 'E':
+		if d[a[0]][0] == 'E': #label implementation here<-----
 			print(d[a[0]][1], end='')
 			f_E(a)
 		if d[a[0]][0] == 'F':

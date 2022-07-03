@@ -97,7 +97,7 @@ for (index,line) in enumerate(assembly_instructions):
 			f_B(a)
 		else:
 			f_C(a)
-	if a[0] in d.keys():
+	elif a[0] in d.keys():
 		if d[a[0]][0] == 'A':
 			f_A(a)
 		if d[a[0]][0] == 'B':
@@ -110,6 +110,3 @@ for (index,line) in enumerate(assembly_instructions):
 			f_E(a)
 		if d[a[0]][0] == 'F':
 			f_F(a)
-
-#label implementation
-

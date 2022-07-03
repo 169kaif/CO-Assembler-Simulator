@@ -31,6 +31,8 @@ for index,line in enumerate(assembly_instructions):
 		if ls[1] not in d_var.keys():
 			d_var[ls[1]] = format(var_val, '08b')
 			var_val+=1
+		if ls[1] in d_var.keys():
+			print("Error redeclaration of variable")
 
 
 d_registers = {'R0':'000', 'R1':'001', 'R2':'010', 'R3':'011', 'R4':'100', 'R5':'101', 'R6':'110', 'FLAGS':'111'}
@@ -65,11 +67,17 @@ def f_A(a):
 	print('00' + reg1 + reg2 + reg3)
 
 def f_B(a):
+	if a[1] not in d_registers.keys():
+		print("Error: Invalid Register")
+		return
 	print(d[a[0]][1], end='')
 	reg1 = d_registers[a[1]]
 	print(reg1 + f'{int(a[2][1:]):08b}')
 
 def f_C(a):
+	if a[1] not in d_registers.keys() or a[2] not in d_registers.keys():
+		print("Error: Invalid Register")
+		return
 	if a[0]=="mov":
 		print("10011", end='')
 	else:
@@ -79,12 +87,19 @@ def f_C(a):
 	print('00000' + reg1 + reg2 )
 
 def f_D(a):
+	if a[1] not in d_registers.keys():
+		print("Error: Invalid Register")
+		return
+	elif a[2] not in d_var:
+		print("Error: Invalid variable")
 	print(d[a[0]][1], end='')
 	reg1 = d_registers[a[1]]
 	reg2 = d_var[a[2]]
 	print(reg1 + reg2)
 
 def f_E(a): #label implementation  here <-----
+	if a[1] not in d_var:
+		print("Error: Invalid variable")
 	print(d[a[0]][1], end='')
 	reg1 = d_labels[a[1]]
 	print('000'+reg1)

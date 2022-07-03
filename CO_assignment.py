@@ -2,37 +2,37 @@ assembly_instructions = []
 
 with open("CO_instructions.txt", "r") as f:
 	for line in f:
-		assembly_instructions.append(line)
-
+		if line=="\n":
+			continue
+		else:
+			assembly_instructions.append(line)
 correct_instructions = []
 faulty_instructions = []
 
-emptylines = 0
-emptyline_index = []
 
-for (index,instruction) in enumerate(assembly_instructions):
-	if instruction == '\n':
-		emptyline_index.append(index)
-		emptylines+=1
 
 varlines = 0
 var_index = []
 
 for (index,instruction) in enumerate(assembly_instructions):
-	if (instruction[0:3]=='var'):
+	if ((instruction[0:3]=='var' and assembly_instructions[index+1][0:3]=='var')):
 		var_index.append(index)
 		varlines += 1
+ind=0
+while assembly_instructions[ind][0]=="var":
+	var_index.append(index)
+	ind+=1
+	varlines+=1
 
 #variable bakchodi
 
-var_val = len(assembly_instructions) - varlines - emptylines
+var_val = len(assembly_instructions) - varlines
 
 d_var = {}
 
-for line in assembly_instructions:
+for index,line in enumerate(assembly_instructions):
 	ls = line.split()
-
-	if ls[0]=='var':
+	if ls[0]=='var' and index in var_index:
 		if ls[1] not in d_var.keys():
 			d_var[ls[1]] = format(var_val, '08b')
 			var_val+=1
@@ -79,8 +79,6 @@ def f_E(a): #label implementation  here <-----
 
 for (index,line) in assembly_instructions:
 	a = line.split()
-	if index in emptyline_index:
-		continue
 	if index in var_index:
 		continue
 
@@ -107,13 +105,7 @@ for (index,line) in assembly_instructions:
 
 d_labels = {}
 
-label_vartemp=0
-label_emptytemp=0
 for index,line in enumerate(assembly_instructions):
 	ls = line.split()
-	if (line == '\n'):
-		label_emptytemp+=1
-	if (line[0:3]=='var'):
-		label_vartemp+=1
 	if ((ls[0][-1] == ':') and ((ls[0][:len(ls[0])-1])not in d_labels)):
-		d_labels[(ls[0][:len(ls[0])-1])] = format(index - label_emptytemp - label_vartemp, '08b')	
+		d_labels[(ls[0][:len(ls[0])-1])] = format(index - varlines, '08b')	

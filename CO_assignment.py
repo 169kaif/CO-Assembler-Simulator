@@ -33,6 +33,8 @@ for index,line in enumerate(assembly_instructions):
 			var_val+=1
 		if ls[1] in d_var.keys():
 			print("Error redeclaration of variable")
+	if ls[0]=='var' and index not in var_index:
+		print("Error variable not declared at the beginning")
 
 
 d_registers = {'R0':'000', 'R1':'001', 'R2':'010', 'R3':'011', 'R4':'100', 'R5':'101', 'R6':'110', 'FLAGS':'111'}
@@ -49,6 +51,8 @@ for index,line in enumerate(assembly_instructions):
 	ls = line.split()
 	if ((ls[0][-1] == ':') and ((ls[0][:len(ls[0])-1])not in d_labels)):
 		d_labels[(ls[0][:len(ls[0])-1])] = format(index - varlines, '08b')	
+	if ((ls[0][-1] == ':') and ((ls[0][:len(ls[0])-1]) in d_labels)):
+		print("Error redeclaration of label found")
   #mov is in both "c" and "b"		
 
   #testcommit pavit
@@ -57,6 +61,9 @@ for index,line in enumerate(assembly_instructions):
 
   #label check niggers
 def f_A(a):
+	if len(a)!=4:
+		print("Error invalid syntax")
+		return
 	if a[1] not in d_registers.keys() or a[2] not in d_registers.keys() or a[3] not in d_registers.keys():
 		print("Error: Invalid Register")
 		return
@@ -67,14 +74,23 @@ def f_A(a):
 	print('00' + reg1 + reg2 + reg3)
 
 def f_B(a):
+	if len(a)!=2:
+		print("Error invalid syntax")
+		return
 	if a[1] not in d_registers.keys():
 		print("Error: Invalid Register")
 		return
-	print(d[a[0]][1], end='')
-	reg1 = d_registers[a[1]]
-	print(reg1 + f'{int(a[2][1:]):08b}')
+	if int(a[2][1:])<=255:
+		print(d[a[0]][1], end='')
+		reg1 = d_registers[a[1]]
+		print(reg1 + f'{int(a[2][1:]):08b}')
+	else:
+		print("Error illegal immidiate values")
 
 def f_C(a):
+	if len(a)!=3:
+		print("Error invalid syntax")
+		return
 	if a[1] not in d_registers.keys() or a[2] not in d_registers.keys():
 		print("Error: Invalid Register")
 		return
@@ -87,27 +103,46 @@ def f_C(a):
 	print('00000' + reg1 + reg2 )
 
 def f_D(a):
+	if len(a)!=3:
+		print("Error invalid syntax")
+		return
 	if a[1] not in d_registers.keys():
 		print("Error: Invalid Register")
 		return
 	elif a[2] not in d_var:
-		print("Error: Invalid variable")
+		if a[2] in d_labels:
+			print("Error use of label as variable")
+		else:
+			print("Error: Invalid variable")
+		return
 	print(d[a[0]][1], end='')
 	reg1 = d_registers[a[1]]
 	reg2 = d_var[a[2]]
 	print(reg1 + reg2)
 
 def f_E(a): #label implementation  here <-----
+	if len(a)!=2:
+		print("Error invalid syntax")
+		return
 	if a[1] not in d_labels:
-		print("Error: Invalid lable")
+		if a[2] in d_var:
+			print("Error use of variable as label")
+		else:
+			print("Error: Invalid label")
+		return
 	print(d[a[0]][1], end='')
 	reg1 = d_labels[a[1]]
 	print('000'+reg1)
 def f_F(a):
+	if len(a)!=1:
+		print("Error invalid syntax")
+		return
 	print(d[a[0]][1]+"00000000000")
 
 for (index,line) in enumerate(assembly_instructions):
 	a = line.split()
+	if index==255:
+		print("Error code has exeeded ")
 	if index in var_index:
 		continue
 	if a[0]=="mov":
@@ -127,8 +162,10 @@ for (index,line) in enumerate(assembly_instructions):
 		if d[a[0]][0] == 'E': #label implementation here<-----
 			f_E(a)
 		if d[a[0]][0] == 'F':
+			if index!=len(assembly_instructions)-1:
+				print("Error Halt is not being used as the final instruction")
 			f_F(a)
 	elif a[0] not in d.keys():
 		print("Error: Invalid Syntax")
-	
-  
+if assembly_instructions(len(assembly_instructions)-1)!="hlt":
+	print("Error last instruction is not halt")

@@ -55,6 +55,9 @@ for index,line in enumerate(assembly_instructions):
 
   #label check niggers
 def f_A(a):
+	if a[1] not in d_registers.keys() or a[2] not in d_registers.keys() or a[3] not in d_registers.keys():
+		print("Error: Invalid Register")
+		return
 	print(d[a[0]][1], end='')
 	reg1 = d_registers[a[1]]
 	reg2 = d_registers[a[2]]
@@ -110,4 +113,7 @@ for (index,line) in enumerate(assembly_instructions):
 			f_E(a)
 		if d[a[0]][0] == 'F':
 			f_F(a)
-    elif  a[0] not in d.keys():
+	elif a[0] not in d.keys():
+		print("Error: Invalid Syntax")
+	
+  

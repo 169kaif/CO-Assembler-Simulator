@@ -102,3 +102,12 @@ for (index,line) in assembly_instructions:
 			f_E(a)
 		if d[a[0]][0] == 'F':
 			print(d[a[0]][1]+"00000000000")
+
+#label implementation
+
+d_labels = {}
+
+for index,line in enumerate(assembly_instructions):
+	ls = line.split()
+	if ((ls[0][-1] == ':') and ((ls[0][:len(ls[0])-1])not in d_labels)):
+		d_labels[(ls[0][:len(ls[0])-1])] = index

@@ -13,14 +13,9 @@ faulty_instructions = []
 
 varlines = 0
 var_index = []
-
-for (index,instruction) in enumerate(assembly_instructions):
-	if ((instruction[0:3]=='var' and assembly_instructions[index+1][0:3]=='var')):
-		var_index.append(index)
-		varlines += 1
 ind=0
-while assembly_instructions[ind][0]=="var":
-	var_index.append(index)
+while assembly_instructions[ind][0:3]=="var":
+	var_index.append(ind)
 	ind+=1
 	varlines+=1
 

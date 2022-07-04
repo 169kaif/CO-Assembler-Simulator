@@ -167,5 +167,5 @@ for (index,line) in enumerate(assembly_instructions):
 			f_F(a)
 	elif a[0] not in d.keys():
 		print("Error: Invalid Syntax")
-if assembly_instructions(len(assembly_instructions)-1)!="hlt":
+if assembly_instructions[len(assembly_instructions)-1]!="hlt":
 	print("Error last instruction is not halt")

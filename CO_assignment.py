@@ -187,7 +187,6 @@ if assembly_instructions[len(assembly_instructions)-1]!="hlt":
 	
 for (index,line) in enumerate(assembly_instructions):
 
-
 	if error_flag == 1:
 		break
 

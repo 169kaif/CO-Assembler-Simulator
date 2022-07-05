@@ -6,6 +6,7 @@ with open("CO_instructions.txt", "r") as f:
 			continue
 		else:
 			assembly_instructions.append(line)
+
 correct_instructions = []
 faulty_instructions = []
 
@@ -35,13 +36,12 @@ for index,line in enumerate(assembly_instructions):
 		if ls[1] not in d_var.keys():
 			d_var[ls[1]] = format(var_val, '08b')
 			var_val+=1
-		if ls[1] in d_var.keys():
+		if ls[1] in d_var.keys() and error_flag!=0:
 			error_flag = 1
 			#print("Error redeclaration of variable")
 	if ls[0]=='var' and index not in var_index:
 		error_flag = 1
-		#print("Error variable not declared at the beginning")
-
+		#print("Error variable not declared at the beginning")	
 
 d_registers = {'R0':'000', 'R1':'001', 'R2':'010', 'R3':'011', 'R4':'100', 'R5':'101', 'R6':'110', 'FLAGS':'111'}
 
@@ -54,14 +54,17 @@ d={"add":["A","10000"],"sub":["A","10001"],"mov":["B","10010"],"ld":["D","10100"
 d_labels = {}
 
 for index,line in enumerate(assembly_instructions):
+
+	same_loop = 0 #handling re-declaration error
+
 	ls = line.split()
 	if ((ls[0][-1] == ':') and ((ls[0][:len(ls[0])-1])not in d_labels)):
-		d_labels[(ls[0][:len(ls[0])-1])] = format(index - varlines, '08b')	
-	if ((ls[0][-1] == ':') and ((ls[0][:len(ls[0])-1]) in d_labels)):
+		d_labels[(ls[0][:len(ls[0])-1])] = format(index - varlines, '08b')
+		same_loop = 1	
+	if ((ls[0][-1] == ':') and ((ls[0][:len(ls[0])-1]) in d_labels)) and same_loop!=1:
 		error_flag = 1
-		#print("Error redeclaration of label found")
-  
-  
+		#print("Error redeclaration of label found")  
+
   #mov is in both "c" and "b"		
 
   #testcommit pavit
@@ -89,7 +92,7 @@ def f_A(a):
 
 def f_B(a):
 	global error_flag
-	if len(a)!=2:
+	if len(a)!=3:
 		error_flag=1
 		#print("Error invalid syntax")
 		return
@@ -180,25 +183,56 @@ def f_F(a):
 
 if assembly_instructions[len(assembly_instructions)-1]!="hlt":
 	error_flag = 1
-	#print("Error last instruction is not halt")		
-
+	#print("Error last instruction is not halt")
+	
 for (index,line) in enumerate(assembly_instructions):
+
 
 	if error_flag == 1:
 		break
 
 	a = line.split()
+
 	if index>255:
 		error_flag = 1
 		#print("Error code has exeeded ")
 	if index in var_index:
 		continue
+
 	if a[0]=="mov":
 		if a[-1][0]=="$":
 			f_B(a)
 		else:
 			f_C(a)
+
+	if (a[0][-1] == ':'):
+		label_arr_temp = line.split()[1:]
+
+		if label_arr_temp[0]=="mov":
+			if label_arr_temp[-1][0]=="$":
+				f_B(label_arr_temp)
+			else:
+				f_C(label_arr_temp)
+
+		elif label_arr_temp[0] in d.keys():
+			if d[label_arr_temp[0]][0] == 'A':
+				f_A(label_arr_temp)
+			if d[label_arr_temp[0]][0] == 'B':
+				f_B(label_arr_temp)
+			if d[label_arr_temp[0]][0] == 'C':
+				f_C(label_arr_temp)
+			if d[label_arr_temp[0]][0] == 'D':
+				f_D(label_arr_temp)
+			if d[label_arr_temp[0]][0] == 'E': #label implementation here<-----
+				f_E(label_arr_temp)
+
+		elif label_arr_temp[0] not in d.keys():
+			error_flag = 1
+		#print("Error: Invalid Syntax")
+		
+
 	elif a[0] in d.keys():
+
 		if d[a[0]][0] == 'A':
 			f_A(a)
 		if d[a[0]][0] == 'B':

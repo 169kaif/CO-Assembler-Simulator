@@ -1,11 +1,11 @@
+import sys
 assembly_instructions = []	
 
-with open("CO_instructions.txt", "r") as f:
-	for line in f:
-		if line=="\n":
-			continue
-		else:
-			assembly_instructions.append(line)
+for line in sys.stdin:
+	if line=="\n":
+		pass
+	else:
+		assembly_instructions.append(line.strip())
 
 correct_instructions = []
 faulty_instructions = []
@@ -181,7 +181,7 @@ def f_F(a):
 	if error_flag == 0:
 		print(d[a[0]][1]+"00000000000")
 
-if assembly_instructions[len(assembly_instructions)-1]!="hlt":
+if (assembly_instructions[len(assembly_instructions)-1])!="hlt":
 	error_flag = 1
 	#print("Error last instruction is not halt")
 	
@@ -204,7 +204,7 @@ for (index,line) in enumerate(assembly_instructions):
 		else:
 			f_C(a)
 
-	if (a[0][-1] == ':'):
+	elif (a[0][-1] == ':'):
 		label_arr_temp = line.split()[1:]
 
 		if label_arr_temp[0]=="mov":
@@ -247,6 +247,7 @@ for (index,line) in enumerate(assembly_instructions):
 				error_flag = 1
 				#print("Error Halt is not being used as the final instruction")
 			f_F(a)
+			
 	elif a[0] not in d.keys():
 		error_flag = 1
 		#print("Error: Invalid Syntax")

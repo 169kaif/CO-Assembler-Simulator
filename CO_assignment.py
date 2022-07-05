@@ -9,8 +9,6 @@ with open("CO_instructions.txt", "r") as f:
 correct_instructions = []
 faulty_instructions = []
 
-
-
 varlines = 0
 var_index = []
 ind=0
@@ -25,6 +23,12 @@ var_val = len(assembly_instructions) - varlines
 
 d_var = {}
 
+#making a flag to check for errors
+
+error_flag = 0
+
+#flag set to 0 initially, value will be changed to 1 in case of an error
+
 for index,line in enumerate(assembly_instructions):
 	ls = line.split()
 	if ls[0]=='var' and index in var_index:
@@ -32,9 +36,11 @@ for index,line in enumerate(assembly_instructions):
 			d_var[ls[1]] = format(var_val, '08b')
 			var_val+=1
 		if ls[1] in d_var.keys():
-			print("Error redeclaration of variable")
+			error_flag = 1
+			#print("Error redeclaration of variable")
 	if ls[0]=='var' and index not in var_index:
-		print("Error variable not declared at the beginning")
+		error_flag = 1
+		#print("Error variable not declared at the beginning")
 
 
 d_registers = {'R0':'000', 'R1':'001', 'R2':'010', 'R3':'011', 'R4':'100', 'R5':'101', 'R6':'110', 'FLAGS':'111'}
@@ -52,7 +58,10 @@ for index,line in enumerate(assembly_instructions):
 	if ((ls[0][-1] == ':') and ((ls[0][:len(ls[0])-1])not in d_labels)):
 		d_labels[(ls[0][:len(ls[0])-1])] = format(index - varlines, '08b')	
 	if ((ls[0][-1] == ':') and ((ls[0][:len(ls[0])-1]) in d_labels)):
-		print("Error redeclaration of label found")
+		error_flag = 1
+		#print("Error redeclaration of label found")
+  
+  
   #mov is in both "c" and "b"		
 
   #testcommit pavit
@@ -61,88 +70,127 @@ for index,line in enumerate(assembly_instructions):
 
   #label check niggers
 def f_A(a):
+	global error_flag
 	if len(a)!=4:
-		print("Error invalid syntax")
+		error_flag = 1
+		#print("Error invalid syntax")
 		return
 	if a[1] not in d_registers.keys() or a[2] not in d_registers.keys() or a[3] not in d_registers.keys():
-		print("Error: Invalid Register")
+		error_flag = 1
+		#print("Error: Invalid Register")
 		return
-	print(d[a[0]][1], end='')
-	reg1 = d_registers[a[1]]
-	reg2 = d_registers[a[2]]
-	reg3 = d_registers[a[3]]
-	print('00' + reg1 + reg2 + reg3)
+	#conditional statement to check for error flag
+	if error_flag == 0:
+		print(d[a[0]][1], end='')
+		reg1 = d_registers[a[1]]
+		reg2 = d_registers[a[2]]
+		reg3 = d_registers[a[3]]
+		print('00' + reg1 + reg2 + reg3)
 
 def f_B(a):
+	global error_flag
 	if len(a)!=2:
-		print("Error invalid syntax")
+		error_flag=1
+		#print("Error invalid syntax")
 		return
 	if a[1] not in d_registers.keys():
-		print("Error: Invalid Register")
+		error_flag = 1
+		#print("Error: Invalid Register")
 		return
-	if int(a[2][1:])<=255:
+	if int(a[2][1:])<=255 and error_flag == 0:
 		print(d[a[0]][1], end='')
 		reg1 = d_registers[a[1]]
 		print(reg1 + f'{int(a[2][1:]):08b}')
 	else:
-		print("Error illegal immidiate values")
+		error_flag=1
+		#print("Error illegal immidiate values")
 
 def f_C(a):
+	global error_flag
 	if len(a)!=3:
-		print("Error invalid syntax")
+		error_flag = 1
+		#print("Error invalid syntax")
 		return
 	if a[1] not in d_registers.keys() or a[2] not in d_registers.keys():
-		print("Error: Invalid Register")
+		error_flag = 1
+		#print("Error: Invalid Register")
 		return
-	if a[0]=="mov":
-		print("10011", end='')
-	else:
-		print(d[a[0]][1], end='')
-	reg1 = d_registers[a[1]]
-	reg2 = d_registers[a[2]]
-	print('00000' + reg1 + reg2 )
+	if error_flag == 0:		
+		if a[0]=="mov":
+			print("10011", end='')
+		else:
+			print(d[a[0]][1], end='')
+		reg1 = d_registers[a[1]]
+		reg2 = d_registers[a[2]]
+		print('00000' + reg1 + reg2 )
 
 def f_D(a):
+	global error_flag
 	if len(a)!=3:
-		print("Error invalid syntax")
+		error_flag = 1
+		#print("Error invalid syntax")
 		return
 	if a[1] not in d_registers.keys():
-		print("Error: Invalid Register")
+		error_flag = 1
+		#print("Error: Invalid Register")
 		return
 	elif a[2] not in d_var:
 		if a[2] in d_labels:
-			print("Error use of label as variable")
+			error_flag = 1
+			#print("Error use of label as variable")
 		else:
-			print("Error: Invalid variable")
+			error_flag = 1
+			#print("Error: Invalid variable")
 		return
-	print(d[a[0]][1], end='')
-	reg1 = d_registers[a[1]]
-	reg2 = d_var[a[2]]
-	print(reg1 + reg2)
+	if error_flag == 0:	
+		print(d[a[0]][1], end='')
+		reg1 = d_registers[a[1]]
+		reg2 = d_var[a[2]]
+		print(reg1 + reg2)
 
 def f_E(a): #label implementation  here <-----
+	global error_flag
 	if len(a)!=2:
-		print("Error invalid syntax")
+		error_flag = 1
+		#print("Error invalid syntax")
 		return
 	if a[1] not in d_labels:
 		if a[2] in d_var:
-			print("Error use of variable as label")
+			error_flag = 1
+			#print("Error use of variable as label")
 		else:
-			print("Error: Invalid label")
+			error_flag = 1
+			#print("Error: Invalid label")
 		return
-	print(d[a[0]][1], end='')
-	reg1 = d_labels[a[1]]
-	print('000'+reg1)
+	if error_flag == 0:
+		print(d[a[0]][1], end='')
+		reg1 = d_labels[a[1]]
+		print('000'+reg1)
+
+
 def f_F(a):
+	global error_flag
 	if len(a)!=1:
-		print("Error invalid syntax")
+		error_flag = 1
+		#print("Error invalid syntax")
 		return
-	print(d[a[0]][1]+"00000000000")
+	
+	if error_flag == 0:
+		print(d[a[0]][1]+"00000000000")
+
+if assembly_instructions[len(assembly_instructions)-1]!="hlt":
+	error_flag = 1
+	#print("Error last instruction is not halt")		
 
 for (index,line) in enumerate(assembly_instructions):
+
+	if error_flag == 1:
+		break
+
 	a = line.split()
-	if index==255:
-		print("Error code has exeeded ")
+	if index>255:
+		error_flag = 1
+		#print("Error code has exeeded ")
 	if index in var_index:
 		continue
 	if a[0]=="mov":
@@ -163,9 +211,9 @@ for (index,line) in enumerate(assembly_instructions):
 			f_E(a)
 		if d[a[0]][0] == 'F':
 			if index!=len(assembly_instructions)-1:
-				print("Error Halt is not being used as the final instruction")
+				error_flag = 1
+				#print("Error Halt is not being used as the final instruction")
 			f_F(a)
 	elif a[0] not in d.keys():
-		print("Error: Invalid Syntax")
-if assembly_instructions[len(assembly_instructions)-1]!="hlt":
-	print("Error last instruction is not halt")
+		error_flag = 1
+		#print("Error: Invalid Syntax")

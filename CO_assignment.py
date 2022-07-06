@@ -18,7 +18,7 @@ while assembly_instructions[ind][0:3]=="var":
 	ind+=1
 	varlines+=1
 
-#variable bakchodi
+#variable handling
 
 var_val = len(assembly_instructions) - varlines
 
@@ -68,13 +68,7 @@ for index,line in enumerate(assembly_instructions):
 		faulty_instructions.append([index+1,":Error redeclaration of label found"])
 		#print("Error redeclaration of label found")  
 
-  #mov is in both "c" and "b"		
-
-  #testcommit pavit
-
-  #variable assignment function to be inserted here
-
-  #label check niggers
+  #mov is in both "c" and "b"
 def f_A(a):
 	global error_flag
 	if 'FLAGS' in a:

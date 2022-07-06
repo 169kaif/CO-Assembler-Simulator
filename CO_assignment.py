@@ -183,7 +183,6 @@ def f_D(a):
 		load+=d[a[0]][1]
 		load+= d_registers[a[1]]
 		load+= d_var[a[2]]
-		load+= d_registers[a[2]]
 		correct_instructions.append(load)
 
 def f_E(a): #label implementation  here <-----
@@ -311,6 +310,15 @@ for (index,line) in enumerate(assembly_instructions):
 		#print("Error: Invalid Syntax")
 
 if error_flag == 1:
-	print(f"There is an error in line {faulty_instructions[0][0]}, the error is: {faulty_instructions[0][1]}")		
+	print(f"There is an error in line {faulty_instructions[0][0]}, the error is: {faulty_instructions[0][1]}")
+	with open("assembler_faults.txt", "a") as f:
+		for line in faulty_instructions:
+			f.write(f"There is an error in line {line[0]}, the error is: {line[1]}")
+			f.write('\n')		
 if error_flag==0:
-	print(correct_instructions)
+	for line in correct_instructions:
+		print(line)
+	for line in correct_instructions:
+		with open("assembler_out.txt", "a") as f:
+			f.write(line)
+			f.write('\n')

@@ -1,3 +1,4 @@
+from json import load
 import sys
 assembly_instructions = []	
 
@@ -78,6 +79,7 @@ for index,line in enumerate(assembly_instructions):
 def f_A(a):
 	global error_flag
 	if 'FLAGS' in a:
+		error_flag=1
 		faulty_instructions.append([index+1, "Illegal use of flags register"])
 	if len(a)!=4:
 		error_flag = 1
@@ -91,15 +93,18 @@ def f_A(a):
 		return
 	#conditional statement to check for error flag
 	if error_flag == 0:
-		print(d[a[0]][1], end='')
-		reg1 = d_registers[a[1]]
-		reg2 = d_registers[a[2]]
-		reg3 = d_registers[a[3]]
-		print('00' + reg1 + reg2 + reg3)
+		load=""
+		load+=d[a[0]][1]
+		load+="00"
+		load+= d_registers[a[1]]
+		load+=d_registers[a[2]]
+		load+=d_registers[a[3]]
+		correct_instructions.append(load)
 
 def f_B(a):
 	global error_flag
 	if 'FLAGS' in a:
+		error_flag=1
 		faulty_instructions.append([index+1, "Illegal use of flags register"])
 	if len(a)!=3:
 		error_flag=1
@@ -112,9 +117,11 @@ def f_B(a):
 		#print("Error: Invalid Register")
 		return
 	if int(a[2][1:])<=255 and error_flag == 0:
-		print(d[a[0]][1], end='')
-		reg1 = d_registers[a[1]]
-		print(reg1 + f'{int(a[2][1:]):08b}')
+		load=""
+		load+=d[a[0]][1]
+		load+=d_registers[a[1]]
+		load+=f'{int(a[2][1:]):08b}'
+		correct_instructions.append(load)
 	else:
 		error_flag=1
 		faulty_instructions.append([index+1,":Error illegal immediate values"])
@@ -135,19 +142,22 @@ def f_C(a):
 	if a[2] == 'FLAGS':
 		error_flag=1
 		faulty_instructions.append([index+1, "Illegal use of flags register"])
-	if error_flag == 0:		
+	if error_flag == 0:	
+		load=""	
 		if a[0]=="mov":
-			print("10011", end='')
+			load+="10011"
 		else:
-			print(d[a[0]][1], end='')
-		reg1 = d_registers[a[1]]
-		reg2 = d_registers[a[2]]
-		print('00000' + reg1 + reg2 )
+			load+=d[a[0]][1]
+		load+="00000"
+		load+= d_registers[a[1]]
+		load+= d_registers[a[2]]
+		correct_instructions.append(load)
 
 def f_D(a):
 	global error_flag
 	if 'FLAGS' in a:
 		faulty_instructions.append([index+1, "Illegal use of flags register"])
+		error_flag=1
 	if len(a)!=3:
 		error_flag = 1
 		faulty_instructions.append([index+1,":Error invalid syntax"])
@@ -169,14 +179,17 @@ def f_D(a):
 			#print("Error: Invalid variable")
 		return
 	if error_flag == 0:	
-		print(d[a[0]][1], end='')
-		reg1 = d_registers[a[1]]
-		reg2 = d_var[a[2]]
-		print(reg1 + reg2)
+		load=""
+		load+=d[a[0]][1]
+		load+= d_registers[a[1]]
+		load+= d_var[a[2]]
+		load+= d_registers[a[2]]
+		correct_instructions.append(load)
 
 def f_E(a): #label implementation  here <-----
 	global error_flag
 	if 'FLAGS' in a:
+		error_flag = 1
 		faulty_instructions.append([index+1, "Illegal use of flags register"])
 	if len(a)!=2:
 		error_flag = 1
@@ -194,15 +207,18 @@ def f_E(a): #label implementation  here <-----
 			#print("Error: Invalid label")
 		return
 	if error_flag == 0:
-		print(d[a[0]][1], end='')
-		reg1 = d_labels[a[1]]
-		print('000'+reg1)
+		load=""
+		load+=d[a[0]][1]
+		load+="000"
+		load+= d_labels[a[1]]
+		correct_instructions.append(load)
 
 
 def f_F(a):
+	global error_flag
 	if 'FLAGS' in a:
 		faulty_instructions.append([index+1, "Illegal use of flags register"])
-	global error_flag
+		error_flag = 1
 	if len(a)!=1:
 		error_flag = 1
 		faulty_instructions.append([index+1,":Error invalid syntax"])
@@ -210,12 +226,18 @@ def f_F(a):
 		return
 	
 	if error_flag == 0:
-		print(d[a[0]][1]+"00000000000")
+		load=""
+		load+=d[a[0]][1]+"00000000000"
+		correct_instructions.append(load)
+
 
 if (assembly_instructions[len(assembly_instructions)-1])!="hlt":
-	error_flag = 1
-	faulty_instructions.append([index+1,":Error last instruction is not halt"])
-	#print("Error last instruction is not halt")
+    if ((assembly_instructions[len(assembly_instructions)-1]).split())[-1] == "hlt" and  ((assembly_instructions[len(assembly_instructions)-1]).split())[0][-1]==":":
+        error_flag = 0
+    else:    
+        error_flag = 1
+        faulty_instructions.append([index+1,":Error last instruction is not halt"])
+        #print("Error last instruction is not halt")
 	
 for (index,line) in enumerate(assembly_instructions):
 
@@ -290,3 +312,5 @@ for (index,line) in enumerate(assembly_instructions):
 
 if error_flag == 1:
 	print(f"There is an error in line {faulty_instructions[0][0]}, the error is: {faulty_instructions[0][1]}")		
+if error_flag==0:
+	print(correct_instructions)

@@ -1,4 +1,3 @@
-from json import load
 import sys
 assembly_instructions = []	
 
@@ -115,8 +114,8 @@ def f_B(a):
 		error_flag = 1
 		faulty_instructions.append([index+1,":Error invalid register"])
 		#print("Error: Invalid Register")
-		return
-	if int(a[2][1:])<=255 and error_flag == 0:
+		return	
+	if 0<=float(a[2][1:])<=255 and error_flag == 0 and ('.' not in a[2][1:]):
 		load=""
 		load+=d[a[0]][1]
 		load+=d_registers[a[1]]
@@ -196,7 +195,7 @@ def f_E(a): #label implementation  here <-----
 		#print("Error invalid syntax")
 		return
 	if a[1] not in d_labels:
-		if a[2] in d_var:
+		if a[1] in d_var:
 			error_flag = 1
 			faulty_instructions.append([index+1,":Error use of variable as label"])
 			#print("Error use of variable as label")
@@ -260,6 +259,10 @@ for (index,line) in enumerate(assembly_instructions):
 
 	elif (a[0][-1] == ':'):
 		label_arr_temp = line.split()[1:]
+
+		if label_arr_temp[0]=="hlt" and (index!=(len(assembly_instructions)-1)):
+			error_flag = 1
+			faulty_instructions.append([(len(assembly_instructions)-1),"Halt instruction is not the last instruction"])
 
 		if label_arr_temp[0]=="mov":
 			if label_arr_temp[-1][0]=="$":

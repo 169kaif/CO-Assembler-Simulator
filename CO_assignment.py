@@ -38,11 +38,11 @@ for index,line in enumerate(assembly_instructions):
 			var_val+=1
 		if ls[1] in d_var.keys() and error_flag!=0:
 			error_flag = 1
-			faulty_instructions.append([index,":Error redeclaration of variable"])
+			faulty_instructions.append([index+1,":Error redeclaration of variable"])
 			#print("Error redeclaration of variable")
 	if ls[0]=='var' and index not in var_index:
 		error_flag = 1
-		faulty_instructions.append([index,":Error variable not declared at the beginning"])
+		faulty_instructions.append([index+1,":Error variable not declared at the beginning"])
 		#print("Error variable not declared at the beginning")	
 
 d_registers = {'R0':'000', 'R1':'001', 'R2':'010', 'R3':'011', 'R4':'100', 'R5':'101', 'R6':'110', 'FLAGS':'111'}
@@ -65,7 +65,7 @@ for index,line in enumerate(assembly_instructions):
 		same_loop = 1	
 	if ((ls[0][-1] == ':') and ((ls[0][:len(ls[0])-1]) in d_labels)) and same_loop!=1:
 		error_flag = 1
-		faulty_instructions.append([index,":Error redeclaration of label found"])
+		faulty_instructions.append([index+1,":Error redeclaration of label found"])
 		#print("Error redeclaration of label found")  
 
   #mov is in both "c" and "b"		
@@ -77,14 +77,16 @@ for index,line in enumerate(assembly_instructions):
   #label check niggers
 def f_A(a):
 	global error_flag
+	if 'FLAGS' in a:
+		faulty_instructions.append([index+1, "Illegal use of flags register"])
 	if len(a)!=4:
 		error_flag = 1
-		faulty_instructions.append([index,":Error invalid syntax"])
+		faulty_instructions.append([index+1,":Error invalid syntax"])
 		#print("Error invalid syntax")
 		return
 	if a[1] not in d_registers.keys() or a[2] not in d_registers.keys() or a[3] not in d_registers.keys():
 		error_flag = 1
-		faulty_instructions.append([index,":Error invalid register"])
+		faulty_instructions.append([index+1,":Error invalid register"])
 		#print("Error: Invalid Register")
 		return
 	#conditional statement to check for error flag
@@ -97,14 +99,16 @@ def f_A(a):
 
 def f_B(a):
 	global error_flag
+	if 'FLAGS' in a:
+		faulty_instructions.append([index+1, "Illegal use of flags register"])
 	if len(a)!=3:
 		error_flag=1
-		faulty_instructions.append([index,":Error invalid syntax"])
+		faulty_instructions.append([index+1,":Error invalid syntax"])
 		#print("Error invalid syntax")
 		return
 	if a[1] not in d_registers.keys():
 		error_flag = 1
-		faulty_instructions.append([index,":Error invalid register"])
+		faulty_instructions.append([index+1,":Error invalid register"])
 		#print("Error: Invalid Register")
 		return
 	if int(a[2][1:])<=255 and error_flag == 0:
@@ -113,21 +117,24 @@ def f_B(a):
 		print(reg1 + f'{int(a[2][1:]):08b}')
 	else:
 		error_flag=1
-		faulty_instructions.append([index,":Error illegal immediate values"])
+		faulty_instructions.append([index+1,":Error illegal immediate values"])
 		#print("Error illegal immidiate values")
 
 def f_C(a):
 	global error_flag
 	if len(a)!=3:
 		error_flag = 1
-		faulty_instructions.append([index,":Error invalid syntax"])
+		faulty_instructions.append([index+1,":Error invalid syntax"])
 		#print("Error invalid syntax")
 		return
 	if a[1] not in d_registers.keys() or a[2] not in d_registers.keys():
 		error_flag = 1
-		faulty_instructions.append([index,":Error invalid register"])
+		faulty_instructions.append([index+1,":Error invalid register"])
 		#print("Error: Invalid Register")
 		return
+	if a[2] == 'FLAGS':
+		error_flag=1
+		faulty_instructions.append([index+1, "Illegal use of flags register"])
 	if error_flag == 0:		
 		if a[0]=="mov":
 			print("10011", end='')
@@ -139,24 +146,26 @@ def f_C(a):
 
 def f_D(a):
 	global error_flag
+	if 'FLAGS' in a:
+		faulty_instructions.append([index+1, "Illegal use of flags register"])
 	if len(a)!=3:
 		error_flag = 1
-		faulty_instructions.append([index,":Error invalid syntax"])
+		faulty_instructions.append([index+1,":Error invalid syntax"])
 		#print("Error invalid syntax")
 		return
 	if a[1] not in d_registers.keys():
 		error_flag = 1
-		faulty_instructions.append([index,":Error invalid register"])
+		faulty_instructions.append([index+1,":Error invalid register"])
 		#print("Error: Invalid Register")
 		return
 	elif a[2] not in d_var:
 		if a[2] in d_labels:
 			error_flag = 1
-			faulty_instructions.append([index,":Error use of label as variable"])
+			faulty_instructions.append([index+1,":Error use of label as variable"])
 			#print("Error use of label as variable")
 		else:
 			error_flag = 1
-			faulty_instructions.append([index,":Error invalid variable"])
+			faulty_instructions.append([index+1,":Error invalid variable"])
 			#print("Error: Invalid variable")
 		return
 	if error_flag == 0:	
@@ -167,19 +176,21 @@ def f_D(a):
 
 def f_E(a): #label implementation  here <-----
 	global error_flag
+	if 'FLAGS' in a:
+		faulty_instructions.append([index+1, "Illegal use of flags register"])
 	if len(a)!=2:
 		error_flag = 1
-		faulty_instructions.append([index,":Error invalid syntax"])
+		faulty_instructions.append([index+1,":Error invalid syntax"])
 		#print("Error invalid syntax")
 		return
 	if a[1] not in d_labels:
 		if a[2] in d_var:
 			error_flag = 1
-			faulty_instructions.append([index,":Error use of variable as label"])
+			faulty_instructions.append([index+1,":Error use of variable as label"])
 			#print("Error use of variable as label")
 		else:
 			error_flag = 1
-			faulty_instructions.append([index,":Error invalid label"])
+			faulty_instructions.append([index+1,":Error invalid label"])
 			#print("Error: Invalid label")
 		return
 	if error_flag == 0:
@@ -189,10 +200,12 @@ def f_E(a): #label implementation  here <-----
 
 
 def f_F(a):
+	if 'FLAGS' in a:
+		faulty_instructions.append([index+1, "Illegal use of flags register"])
 	global error_flag
 	if len(a)!=1:
 		error_flag = 1
-		faulty_instructions.append([index,":Error invalid syntax"])
+		faulty_instructions.append([index+1,":Error invalid syntax"])
 		#print("Error invalid syntax")
 		return
 	
@@ -201,7 +214,7 @@ def f_F(a):
 
 if (assembly_instructions[len(assembly_instructions)-1])!="hlt":
 	error_flag = 1
-	faulty_instructions.append([index,":Error last instruction is not halt"])
+	faulty_instructions.append([index+1,":Error last instruction is not halt"])
 	#print("Error last instruction is not halt")
 	
 for (index,line) in enumerate(assembly_instructions):
@@ -213,7 +226,7 @@ for (index,line) in enumerate(assembly_instructions):
 
 	if index>255:
 		error_flag = 1
-		faulty_instructions.append([index,":Error code has exceeded"])
+		faulty_instructions.append([index+1,":Error code has exceeded"])
 		#print("Error code has exeeded ")
 	if index in var_index:
 		continue
@@ -247,7 +260,7 @@ for (index,line) in enumerate(assembly_instructions):
 
 		elif label_arr_temp[0] not in d.keys():
 			error_flag = 1
-			faulty_instructions.append([index,"Error invalid syntax"])
+			faulty_instructions.append([index+1,"Error invalid syntax"])
 		#print("Error: Invalid Syntax")
 		
 
@@ -266,11 +279,14 @@ for (index,line) in enumerate(assembly_instructions):
 		if d[a[0]][0] == 'F':
 			if index!=len(assembly_instructions)-1:
 				error_flag = 1
-				faulty_instructions.append([index,":Error Halt is not being used as the final instruction"])
+				faulty_instructions.append([index+1,":Error Halt is not being used as the final instruction"])
 				#print("Error Halt is not being used as the final instruction")
 			f_F(a)
 			
 	elif a[0] not in d.keys():
 		error_flag = 1
-		faulty_instructions.append([index,"Error invalid syntax"])
+		faulty_instructions.append([index+1,"Error invalid syntax"])
 		#print("Error: Invalid Syntax")
+
+if error_flag == 1:
+	print(f"There is an error in line {faulty_instructions[0][0]}, the error is: {faulty_instructions[0][1]}")		

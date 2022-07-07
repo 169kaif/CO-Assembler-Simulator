@@ -1,3 +1,4 @@
+from cProfile import label
 import sys
 assembly_instructions = []	
 
@@ -275,6 +276,12 @@ for (index,line) in enumerate(assembly_instructions):
 				f_D(label_arr_temp)
 			if d[label_arr_temp[0]][0] == 'E': #label implementation here<-----
 				f_E(label_arr_temp)
+			if d[label_arr_temp[0]][0] == 'F':
+				if index!=len(assembly_instructions)-1:
+					error_flag = 1
+					faulty_instructions.append([index+1,":Error Halt is not being used as the final instruction"])
+					#print("Error Halt is not being used as the final instruction")
+				f_F(label_arr_temp)	
 
 		elif label_arr_temp[0] not in d.keys():
 			error_flag = 1

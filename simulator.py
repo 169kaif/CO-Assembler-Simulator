@@ -32,3 +32,6 @@ h=len(memory)
 for i in range(0,h):
     opcode=instructions[:5]
     if 
+
+
+#kaif test push

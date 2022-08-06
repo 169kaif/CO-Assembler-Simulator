@@ -76,8 +76,8 @@ def mul(a,b,c):
     set_flag_overflow(regs[7])
 
 def div(a,b):
-  regs[0]=a//b
-  regs[1]=a%b
+  regs[0]=regs[a]//regs[b]
+  regs[1]=regs[a]%regs[b]
 
 def rs(a,b):
   regs[a]=regs[a] // (2**b)
@@ -95,7 +95,7 @@ def andd(a,b,c):
   regs[c]=regs[a] & regs[b]
 
 def nott(a,b):
-  regs[b]= ~regs[a]
+  regs[b]= 2**16 - regs[a] -1
 
 def cmpp(a,b):
   if regs[a]>regs[b]:
@@ -148,6 +148,8 @@ for i in range(0,h):
         if regs[7][-1]=="1":
           i=a
     elif d[opcode]=="F":
+      if (opcode not in ratio):
+        flag_reset()
       print(format(i,'08b'), end=' ')
       for i in range(7):
         print(format(regs[i],'016b'), end=' ')

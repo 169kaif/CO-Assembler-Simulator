@@ -1,67 +1,80 @@
+import sys
 from sys import stdin
 
 memory=[]
-with open("/home/mo/Desktop/CO_Assignment/instructions.txt",'r') as f:
-    memory = f.readlines()
+for line in sys.stdin:
+	if line=="\n":
+		pass
+	else:
+		memory.append(line.strip())
 regs=[0000000000000000,0000000000000000,0000000000000000,0000000000000000,0000000000000000,0000000000000000,0000000000000000,0000000000000000]
+
+i_temp = len(memory)
+
+for i in range(i_temp,256):
+  memory.append('0000000000000000')
 
 #FLAGS
 regs[7]="0000000000000000"
 
-def flag_reset(flag_):
-
-  flag_[0:-1] = "0000000000000000"
+def flag_reset():
+  regs[7]="0000000000000000"
   return
   
-def set_flag_overflow(flag_):
+def set_flag_overflow():
   
-  flag_[-4]='1'
+  regs[7] = regs[7][:-5] + '1' + regs[7][-3:]
   return
 
-def set_lt_overflow(flag_):
+def set_lt_overflow():
 
-  flag_[-3] = '1'
+  regs[7] = regs[7][-4] + '1' + regs[7][-2:]
   return
 
-def set_gt_overflow(flag_):
+def set_gt_overflow():
 
-  flag_[-2]='1'
+  regs[7] = regs[7][-3] + '1' + regs[7][-1]
   return
 
-def set_equal_overflow(flag_reg):
+def set_equal_overflow():
 
-  flag_reg[-1]='1'
+  regs[7] = regs[7][:-1] + '1'
   return
   
 
 def add(a,b,c):
   regs[c]=regs[a] + regs[b]
   if(regs[c]>2**16-1):
+    regs[c] = regs[c]%(2**16 -1)
     set_flag_overflow(regs[7])
 
 def sub(a,b,c):
   regs[c]=regs[a] - regs[b]
-  if(regs[c]>1111111 or regs[c]<0):
+  if(regs[c]<0):
+    regs[c] = 0
     set_flag_overflow(regs[7])
 
 def movB(a,b):
   regs[a]=b
 
 def movC(a,b):
-  if b==7:
-    regs[a]==int(regs[b],2)
+  if a==7:
+    regs[b]=int(regs[a],2)
   else:
     regs[b]=regs[a]
 
 def ld(a,b):
-  regs[a]=memory[b]
+  regs[a]=int(memory[b],2)
 
 def st(a,b):
-  memory[b]=regs[a]
+  memory[b]= format(regs[a],'016b')
 
 def mul(a,b,c):
   regs[c]=regs[a] * regs[b]
-  
+  if regs[c] > (2**16 - 1):
+    regs[c] = regs[c]%(2**16-1)
+    set_flag_overflow(regs[7])
+
 def div(a,b):
   regs[0]=a//b
   regs[1]=a%b
@@ -86,11 +99,11 @@ def nott(a,b):
 
 def cmpp(a,b):
   if regs[a]>regs[b]:
-    set_gt_overflow(regs[7])
+    set_gt_overflow()
   elif regs[a]<regs[b]:
-    set_lt_overflow(regs[7])
+    set_lt_overflow()
   elif regs[a]==regs[b]:
-    set_equal_overflow(regs[7])
+    set_equal_overflow()
 
 
 d={"10000":"A","10001":"A","10010":"B","10011":"C","10100":"D","10101":"D","10110":"A","10111":"C","11000":"B","11001":"B","11010":"A","11011":"A","11100":"A","11101":"C","11110":"C","11111":"E","01100":"E","01101":"E","01111":"E","01010":"F"}
@@ -119,7 +132,7 @@ for i in range(0,h):
     elif d[opcode]=="D":
       a=int(memory[i][5:8],2)
       b=int(memory[i][8:],2)
-      dfunc(opcode)(a,b)
+      dfunc[opcode](a,b)
 
     elif d[opcode]=="E":
       a=int(memory[i][8:],2)
@@ -135,16 +148,18 @@ for i in range(0,h):
         if regs[7][-1]=="1":
           i=a
     elif d[opcode]=="F":
+      print(format(i,'08b'), end=' ')
+      for i in range(7):
+        print(format(regs[i],'016b'), end=' ')
+      print(regs[7])
       break
-    if opcode==10011 and int(memory[i][13:],2)==7:
-      continue
-    if opcode not in ratio:
-      flag_reset(regs[7])
+    if (opcode not in ratio):
+      flag_reset()
 
     print(format(i,'08b'), end=' ')
     for i in range(7):
       print(format(regs[i],'016b'), end=' ')
     print(regs[7])
 
-for line in memory:
-  print(line)    
+for i in range (len(memory)):
+  print(memory[i][:16])

@@ -23,17 +23,17 @@ def flag_reset():
   
 def set_flag_overflow():
   
-  regs[7] = regs[7][:-5] + '1' + regs[7][-3:]
+  regs[7] = regs[7][:-4] + '1' + regs[7][-3:]
   return
 
 def set_lt_overflow():
 
-  regs[7] = regs[7][-4] + '1' + regs[7][-2:]
+  regs[7] = regs[7][:-3] + '1' + regs[7][-2:]
   return
 
 def set_gt_overflow():
 
-  regs[7] = regs[7][-3] + '1' + regs[7][-1]
+  regs[7] = regs[7][:-2] + '1' + regs[7][-1]
   return
 
 def set_equal_overflow():
@@ -111,57 +111,62 @@ dfunc={"10000":add,"10001":sub,"10010":movB,"10011":movC,"10100":ld,"10101":st,"
 
 h=len(memory)
 ratio=["10001","10000","10110","11110"]
-for i in range(0,h):
-    opcode=memory[i][:5]
+pc=0
+while(pc<h):
+    hjhj=pc
+    opcode=memory[pc][:5]
     if d[opcode]=="A":
-      a = int(memory[i][7:10],2)  
-      b = int(memory[i][10:13],2)
-      c = int(memory[i][13:],2)
+      a = int(memory[pc][7:10],2)  
+      b = int(memory[pc][10:13],2)
+      c = int(memory[pc][13:],2)
       dfunc[opcode](a,b,c)
 
     elif d[opcode]=="B":
-      a=int(memory[i][5:8],2)
-      b=int(memory[i][8:],2)
+      a=int(memory[pc][5:8],2)
+      b=int(memory[pc][8:],2)
       dfunc[opcode](a,b)
 
     elif d[opcode]=="C":
-      a = int(memory[i][10:13],2)
-      b = int(memory[i][13:],2)
+      a = int(memory[pc][10:13],2)
+      b = int(memory[pc][13:],2)
       dfunc[opcode](a,b)
 
     elif d[opcode]=="D":
-      a=int(memory[i][5:8],2)
-      b=int(memory[i][8:],2)
+      a=int(memory[pc][5:8],2)
+      b=int(memory[pc][8:],2)
       dfunc[opcode](a,b)
 
     elif d[opcode]=="E":
-      a=int(memory[i][8:],2)
+      a=int(memory[pc][8:],2)
       if opcode=="11111":
-        i=a
+        pc=a-1
       elif opcode=="01100":
         if regs[7][-3]=="1":
-          i=a
+          pc=a-1
       elif opcode=="01101":
         if regs[7][-2]=="1":
-          i=a
+          pc=a-1
       elif opcode=="01111":
         if regs[7][-1]=="1":
-          i=a
+          pc=a-1
     elif d[opcode]=="F":
       if (opcode not in ratio):
         flag_reset()
-      print(format(i,'08b'), end=' ')
-      for i in range(7):
-        print(format(regs[i],'016b'), end=' ')
+      print(format(hjhj,'08b'), end=' ')
+      for j in range(7):
+        print(format(regs[j],'016b'), end=' ')
       print(regs[7])
       break
     if (opcode not in ratio):
       flag_reset()
 
-    print(format(i,'08b'), end=' ')
-    for i in range(7):
-      print(format(regs[i],'016b'), end=' ')
+    print(format(hjhj,'08b'), end=' ')
+    for hlh in range(7):
+      print(format(regs[hlh],'016b'), end=' ')
     print(regs[7])
+    pc+=1
+    if d[opcode]=="F":
+      break
 
 for i in range (len(memory)):
   print(memory[i][:16])

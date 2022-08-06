@@ -1,9 +1,4 @@
-from sys import flags
-
-#utility func to convert decimal to 8bit binary
-# def dec28(a):
-#    print(format(a,'08b'), end=' ')
-#    return
+from sys import stdin
 
 memory=[]
 with open("/home/mo/Desktop/CO_Assignment/instructions.txt",'r') as f:
@@ -12,11 +7,6 @@ regs=[0000000000000000,0000000000000000,0000000000000000,0000000000000000,000000
 
 #FLAGS
 regs[7]="0000000000000000"
-
-# def reg_display(a):
-#   for i in range(7):
-#     print(dec28(regs[i]), end=' ')
-  
 
 def flag_reset(flag_):
 
@@ -155,3 +145,6 @@ for i in range(0,h):
     for i in range(7):
       print(format(regs[i],'016b'), end=' ')
     print(regs[7])
+
+for line in memory:
+  print(line)    
